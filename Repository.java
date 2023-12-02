@@ -32,11 +32,11 @@ public class Repository {
     }
 
     public static void addTask(String user_login, String task_name, String task_description, String deadline) {
-        if (task_name.length() > 30) {
-            task_name = task_name.substring(0, 26) + "...";
+        if (task_name.length() >= 100) {
+            task_name = task_name.substring(0, 96) + "...";
         }
-        if (task_description.length() > 255) {
-            task_description = task_description.substring(0, 251) + "...";
+        if (task_description.length() >= 2000) {
+            task_description = task_description.substring(0, 1996) + "...";
         }
         if (deadline.length() > 10) {
             deadline = "1900-01-01";
