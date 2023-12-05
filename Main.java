@@ -1,6 +1,10 @@
+import java.sql.*;
+import java.util.Random;
+
 public class Main {
     public static void main(String[] args) {
-        Viewer application = new Viewer();
-        application.start();
+        //enter your other database parameters if you cant access to the database:
+        //Repository.setDatabaseParameters();
+        Viewer viewer = new Viewer();
     }
 }
