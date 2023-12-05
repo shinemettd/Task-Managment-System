@@ -6,13 +6,14 @@ public class LoginWindow extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JTextField errorField;
+    private JTextField loginMessage;
     private Controller controller;
 
     public LoginWindow(Controller controller) {
         super("Task Manager");
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 300);
+        setSize(450, 300);
         setResizable(false);
         setLocationRelativeTo(null);
 
@@ -77,6 +78,16 @@ public class LoginWindow extends JFrame {
         errorField.setVisible(false);
         panel.add(errorField);
 
+        loginMessage = new JTextField();
+        loginMessage.setBounds(75, 115, 400, 30);
+        loginMessage.setEditable(false);
+        loginMessage.setText("Registration completed! Enter your login and password");
+        loginMessage.setForeground(new Color(41, 255, 48));
+        loginMessage.setBorder(null);
+        loginMessage.setBackground(new Color(22, 22, 22));
+        loginMessage.setVisible(false);
+        panel.add(loginMessage);
+
         add(panel);
 
         setVisible(true);
@@ -91,7 +102,13 @@ public class LoginWindow extends JFrame {
     }
 
     public void showFailedSignInMessage() {
-        errorField.setVisible(false);
+        loginMessage.setVisible(false);
         errorField.setVisible(true);
+        new Timer(10000, e -> errorField.setVisible(false));
+    }
+    public void showUserLoginMessage() {
+        errorField.setVisible(false);
+        loginMessage.setVisible(true);
+        new Timer(10000, e -> loginMessage.setVisible(false));
     }
 }
