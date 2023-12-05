@@ -1,9 +1,18 @@
-public class Viewer {
-    public Viewer() {
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 
+public class Viewer {
+    private Controller controller;
+
+    private LoginWindow loginWindow;
+
+    public Viewer() {
+        controller = new Controller(this);
+        loginWindow = new LoginWindow(controller);
     }
 
-    public void start() {
-
+    public LoginWindow getLoginWindow() {
+        return loginWindow;
     }
 }
