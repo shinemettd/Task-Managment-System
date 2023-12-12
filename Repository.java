@@ -83,8 +83,8 @@ public class Repository {
     }
 
     public static void removeTask(String login, int task_id) {
-        String insertQuery = "delete from task " +
-                "where user_login = ? and task_id = ? ";
+        String insertQuery = "DELTE FROM task " +
+                "WHERE user_login = ? AND task_id = ? ";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
             preparedStatement.setString(1, login);
@@ -102,7 +102,7 @@ public class Repository {
     }
 
     public static void changeTaskName(String login, int task_id, String newName) {
-        String updateQuery = "update task set name = ? where task_id = ? and user_login = ?";
+        String updateQuery = "UPDATE task SET name = ? WHERE task_id = ? AND user_login = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             preparedStatement.setString(1, newName);
@@ -121,7 +121,7 @@ public class Repository {
     }
 
     public static void changeTaskDescription(String login, int task_id, String newDescription) {
-        String updateQuery = "update task set description = ? where task_id = ? and user_login  = ?";
+        String updateQuery = "UPDATE task SET description = ? WHERE task_id = ? AND user_login  = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             preparedStatement.setString(1, newDescription);
@@ -140,7 +140,7 @@ public class Repository {
     }
 
     public static void changeTaskDeadline(String login, int task_id, String newDeadline) {
-        String updateQuery = "update task set deadline = ? where task_id = ? and user_login  = ?";
+        String updateQuery = "UPDATE task SET deadline = ? WHERE task_id = ? AND user_login  = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             Date sqlDeadline = Date.valueOf(newDeadline);
@@ -164,7 +164,7 @@ public class Repository {
             System.out.println("Repository: Incorrect type of status");
             return;
         }
-        String updateQuery = "update task set status = ? where task_id = ? and user_login = ?";
+        String updateQuery = "UPDATE task SET status = ? WHERE task_id = ? AND user_login = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             preparedStatement.setString(1, newStatus);
@@ -183,7 +183,7 @@ public class Repository {
     }
 
     public static boolean logIn(String login, String password) {
-        String findUser = "select * from \"user\" where login = ? and password = ?";
+        String findUser = "SELECT * FROM \"user\" WHERE login = ? AND password = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(findUser)) {
             preparedStatement.setString(1, login);
@@ -200,5 +200,23 @@ public class Repository {
         }
         System.out.println("Repository: Failed login");
         return false;
+    }
+
+    public static String getUserName(String login) {
+        String selectName = "SELECT name FROM \"user\" WHERE login = ?";
+        String name = null;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectName)) {
+            preparedStatement.setString(1, login);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    name = resultSet.getString("name");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return name;
     }
 }

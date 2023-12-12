@@ -194,5 +194,12 @@ public class RegisterWindow extends JFrame {
         timer.setRepeats(false);
         timer.start();
     }
+
+    public void resetValues() {
+        nameField.setText("");
+        usernameField.setText("");
+        passwordField.setText("");
+        extraPasswordField.setText("");
+    }
 }
 

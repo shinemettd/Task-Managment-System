@@ -13,4 +13,8 @@ public class Controller implements ActionListener {
         String command = e.getActionCommand();
         model.doAction(command);
     }
+
+    public Model getModel() {
+        return model;
+    }
 }

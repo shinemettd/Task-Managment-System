@@ -7,7 +7,7 @@ public class LoginWindow extends JFrame {
     private JPasswordField passwordField;
     private JTextField errorField;
     private JTextField loginMessage;
-    private Controller controller;
+    private final Controller controller;
 
     public LoginWindow(Controller controller) {
         super("Task Manager");
@@ -110,5 +110,17 @@ public class LoginWindow extends JFrame {
         errorField.setVisible(false);
         loginMessage.setVisible(true);
         new Timer(10000, e -> loginMessage.setVisible(false));
+    }
+
+    public void hideLoginWindow() {
+        setVisible(false);
+        usernameField.setText("");
+        passwordField.setText("");
+    }
+
+    public void showLoginWindow() {
+        setVisible(true);
+        usernameField.setText("");
+        passwordField.setText("");
     }
 }
