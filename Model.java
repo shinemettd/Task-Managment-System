@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class Model {
@@ -10,12 +11,12 @@ public class Model {
     private RegisterWindow registerWindow;
     private MainWindow mainWindow;
     private ArrayList<Task> tasksList;
+    private String currentButtonActionNumber;
 
     public Model(Viewer viewer) {
         this.viewer = viewer;
         this.loginWindow = viewer.getLoginWindow();
         this.registerWindow = viewer.getRegisterWindow();
-        this.mainWindow = viewer.getMainWindow();
         tasksList = new ArrayList<>();
     }
 
@@ -32,7 +33,10 @@ public class Model {
             System.out.println("Model: Success login");
             loginWindow.hideLoginWindow();
             loginWindow = null;
+            mainWindow = viewer.getMainWindow();
+            mainWindow.updateMainMenu();
             doAction("MainWindow");
+
         } else {
             loginWindow.showFailedSignInMessage();
         }
@@ -59,6 +63,10 @@ public class Model {
     }
 
     public void doAction(String command) {
+        if (command.contains("TaskButtonAction") && command.length() > 16) {
+            currentButtonActionNumber = command.substring(16, command.length());
+            doAction("TaskButtonAction");
+        }
         switch (command) {
             case "SignIn" -> {
                 System.out.println("Model: Sign in");
@@ -123,11 +131,28 @@ public class Model {
                 mainWindow.showAddTask();
             } case "SaveSettings" -> {
                 System.out.println("Model: SaveSettings");
+                comparePasswords();
                 setName(mainWindow.getNameFieldText());
-                setPassword(mainWindow.getPasswordFieldText());
                 mainWindow.updateSettings();
+            } case "TaskButtonAction" -> {
+                System.out.println("Model: TaskButtonAction, task number = " + currentButtonActionNumber);
+                System.out.println(login + "\nModel: Total tasks = " + Repository.getTasksCount(login));
+                mainWindow.showMainMenu();
             }
         }
+    }
+    public boolean comparePasswords() {
+        if (!(mainWindow.getOldPasswordFieldText().equals(password))) {
+            System.out.println("Incorrect old password!"); //todo
+            JOptionPane.showMessageDialog(null, "Incorrect old password!");
+            return false;
+        }
+        if (!(mainWindow.getNewPasswordField().equals(mainWindow.getNewConfirmationPasswordField()))) {
+            System.out.println("Incorrect new passwords!"); //todo
+            JOptionPane.showMessageDialog(null, "Incorrect new passwords!");
+            return false;
+        }
+        return true;
     }
 
 //    public void createTasksList() {
