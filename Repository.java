@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Repository {
 
@@ -96,8 +97,8 @@ public class Repository {
             } else {
                 System.out.println("Repository: Failed task deletion");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
     }
 
@@ -115,8 +116,8 @@ public class Repository {
             } else {
                 System.out.println("Repository: Failed name rewrite");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
     }
 
@@ -134,8 +135,8 @@ public class Repository {
             } else {
                 System.out.println("Repository: Failed description rewrite");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
     }
 
@@ -154,8 +155,8 @@ public class Repository {
             } else {
                 System.out.println("Repository: Failed deadline rewrite");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
     }
 
@@ -177,8 +178,8 @@ public class Repository {
             } else {
                 System.out.println("Repository: Failed status rewrite");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
     }
 
@@ -195,8 +196,8 @@ public class Repository {
                     return true;
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
         System.out.println("Repository: Failed login");
         return false;
@@ -214,9 +215,55 @@ public class Repository {
                     name = resultSet.getString("name");
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
         return name;
     }
+
+    public static int getTasksCount(String login) {
+        String selectName = "SELECT COUNT(*) AS count FROM task WHERE user_login = ?";
+        int count = 0;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectName)) {
+            preparedStatement.setString(1, login);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt("count");
+                }
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return count;
+    }
+
+    public static ArrayList<Task> getTasksList(String login) {
+        ArrayList<Task> taskList = new ArrayList<>();
+        String taskQuery = "SELECT * FROM task WHERE user_login = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(taskQuery)) {
+            preparedStatement.setString(1, login);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    String userLogin = resultSet.getString("user_login");
+                    int taskId = resultSet.getInt("task_id");
+                    String name = resultSet.getString("name");
+                    String description = resultSet.getString("description");
+                    Date creationDate = resultSet.getDate("creation_date");
+                    Date deadline = resultSet.getDate("deadline");
+                    String status = resultSet.getString("status");
+
+                    Task task = new Task(userLogin, taskId, name, description, creationDate, deadline, status);
+                    taskList.add(task);
+                }
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return taskList;
+    }
+
 }
