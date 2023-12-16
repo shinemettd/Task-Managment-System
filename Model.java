@@ -35,8 +35,8 @@ public class Model {
             loginWindow = null;
             mainWindow = viewer.getMainWindow();
             mainWindow.updateMainMenu();
+            mainWindow.updateSettings();
             doAction("MainWindow");
-
         } else {
             loginWindow.showFailedSignInMessage();
         }
@@ -110,10 +110,12 @@ public class Model {
             } case "MainWindow" -> {
                 System.out.println("Model: MainWindow");
                 mainWindow = viewer.getMainWindow();
+                mainWindow.updateMainMenu();
                 mainWindow.showMainWindow();
             } case "MenuMainWindow" -> {
                 System.out.println("Model: MenuMainWindow");
                 mainWindow = viewer.getMainWindow();
+                mainWindow.updateMainMenu();
                 mainWindow.showMainMenu();
             } case "ProfileMainWindow" -> {
                 System.out.println("Model: ProfileMainWindow");
@@ -131,7 +133,7 @@ public class Model {
                 mainWindow.showAddTask();
             } case "SaveSettings" -> {
                 System.out.println("Model: SaveSettings");
-                comparePasswords();
+                changePassword();
                 setName(mainWindow.getNameFieldText());
                 mainWindow.updateSettings();
             } case "TaskButtonAction" -> {
@@ -141,27 +143,22 @@ public class Model {
             }
         }
     }
-    public boolean comparePasswords() {
+    public void changePassword() {
+        if (mainWindow.getOldPasswordFieldText().equals("")) {
+            JOptionPane.showMessageDialog(null, "You must enter your current password to save changes!");
+            return;
+        }
         if (!(mainWindow.getOldPasswordFieldText().equals(password))) {
-            System.out.println("Incorrect old password!"); //todo
-            JOptionPane.showMessageDialog(null, "Incorrect old password!");
-            return false;
+            JOptionPane.showMessageDialog(null, "Incorrect current password!");
+            return;
         }
         if (!(mainWindow.getNewPasswordField().equals(mainWindow.getNewConfirmationPasswordField()))) {
-            System.out.println("Incorrect new passwords!"); //todo
             JOptionPane.showMessageDialog(null, "Incorrect new passwords!");
-            return false;
+            return;
         }
-        return true;
+        String newName = mainWindow.getNameFieldText();
+        Repository.changeUserName(login, newName);
     }
-
-//    public void createTasksList() {
-//        tasksList = new ArrayList<>();
-//        int totalTasks = Repository.getTotalTasks(login);
-//        for (int i = 0; i < totalTasks; i++) {
-//            //Task task = new Task();
-//        }
-//    }
 
     private boolean checkText(String text) {
         return !text.contains(" ") && !text.equals("");

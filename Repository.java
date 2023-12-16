@@ -54,7 +54,25 @@ public class Repository {
         return false;
     }
 
-    public static void addTask(String user_login, String task_name, String task_description, String deadline) throws SQLException {
+    public static void changeUserName(String login, String newName) {
+        String updateQuery = "UPDATE \"user\" SET name = ? WHERE login = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, newName);
+            preparedStatement.setString(2, login);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Repository: Success name change");
+            } else {
+                System.out.println("Repository: Failed name change");
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+    }
+
+    public static void addTask(String user_login, String task_name, String task_description, String deadline) {
         if (task_name.length() >= 100) {
             task_name = task_name.substring(0, 96) + "...";
         }
@@ -80,6 +98,8 @@ public class Repository {
             } else {
                 System.out.println("Repository: Failed task creation");
             }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
         }
     }
 
@@ -241,7 +261,11 @@ public class Repository {
 
     public static ArrayList<Task> getTasksList(String login) {
         ArrayList<Task> taskList = new ArrayList<>();
-        String taskQuery = "SELECT * FROM task WHERE user_login = ?";
+        String taskQuery = "SELECT * FROM task WHERE user_login = ? ORDER BY CASE status " +
+                "WHEN 'Done' THEN 1 " +
+                "WHEN 'Doing' THEN 2 " +
+                "WHEN 'Planned' THEN 3 " +
+                "ELSE 4 END";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(taskQuery)) {
             preparedStatement.setString(1, login);

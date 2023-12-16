@@ -2,6 +2,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Formatter;
 
 public class MainWindow extends JFrame {
     private Controller controller;
@@ -20,6 +21,13 @@ public class MainWindow extends JFrame {
     private JPasswordField oldPasswordField;
     private JPasswordField newPasswordField;
     private JPasswordField newConfirmationPasswordField;
+
+    private JTextField newTaskName;
+    private JTextArea newTaskDescription;
+    private JTextField newTaskStatus;
+    private String newTaskCreationDate;
+    private String newTaskDeadline;
+
 
     public MainWindow(Controller controller) {
         super("Task Management System");
@@ -88,7 +96,7 @@ public class MainWindow extends JFrame {
 
         actionPanel.add(tasksPanel, "Tasks");
 
-        JPanel addTaskPanel = drawTask();
+        JPanel addTaskPanel = drawAddTask();
 
         actionPanel.add(addTaskPanel, "AddTask");
 
@@ -107,27 +115,36 @@ public class MainWindow extends JFrame {
         buttonPanel.setBackground(new Color(22, 22, 22));
 
         ArrayList<Task> tasksList = Repository.getTasksList(model.getLogin());
-        System.out.println(model.getLogin() + " total tasks = " + tasksList.size());
 
         for (int i = 0; i < tasksList.size(); i++) {
             String taskName = tasksList.get(i).getName();
-            JButton button = new JButton(taskName);
+            JButton button = new JButton();
             button.setPreferredSize(new Dimension(Integer.MAX_VALUE, 250));
             button.setActionCommand("TaskButtonAction" + i);
             button.addActionListener(controller);
             button.setBounds(550, 500, 150, 50);
             button.setRequestFocusEnabled(false);
             button.setFont(new Font("", Font.BOLD, 36));
-            button.setForeground(new Color(212, 212, 212));
-            button.setBackground(new Color(44, 44, 44));
+            if (tasksList.get(i).getStatus().equals("Done")) {
+                button.setForeground(new Color(212, 212, 212));
+                button.setBackground(new Color(79, 255, 79));
+                button.setText(String.format("<html>%s<br> [Done] </html>", taskName));
+            } else if (tasksList.get(i).getStatus().equals("Doing")) {
+                button.setForeground(new Color(212, 212, 212));
+                button.setBackground(new Color(255, 145, 57));
+                button.setText(String.format("<html>%s<br> [Doing] </html>", taskName));
+            } else {
+                button.setForeground(new Color(212, 212, 212));
+                button.setBackground(new Color(255, 60, 60));
+                button.setText(String.format("<html>%s<br> [Planned] </html>", taskName));
+            }
             button.setBorder(new LineBorder(new Color(212, 212, 212), 1));
             buttonPanel.add(button);
         }
-        JButton lastButton = new JButton("Add task");
+        JButton lastButton = new JButton("New Task");
         lastButton.setPreferredSize(new Dimension(Integer.MAX_VALUE, 250));
-        lastButton.setActionCommand("AddTaskMainWindow");
         lastButton.addActionListener(controller);
-        lastButton.setActionCommand("AddTask");
+        lastButton.setActionCommand("AddTaskMainWindow");
         lastButton.setRequestFocusEnabled(false);
         lastButton.setFont(new Font("", Font.BOLD, 36));
         lastButton.setForeground(new Color(212, 212, 212));
@@ -144,7 +161,7 @@ public class MainWindow extends JFrame {
         JScrollPane updatedTasksPanel = drawMainMenu();
 
         actionPanel.remove(0);
-        actionPanel.add(updatedTasksPanel, "Tasks");
+        actionPanel.add(updatedTasksPanel, "Tasks", 0);
 
         revalidate();
         repaint();
@@ -166,7 +183,7 @@ public class MainWindow extends JFrame {
         settingsPanel.setBackground(new Color(22, 22, 22));
 
         JLabel nameLabel = new JLabel("Your name");
-        nameLabel.setBounds(400, 100, 100, 50);
+        nameLabel.setBounds(385, 100, 100, 50);
         nameLabel.setForeground(Color.WHITE);
 
         nameField = new JTextField(model.getName() == null ? "-" : model.getName());
@@ -176,7 +193,7 @@ public class MainWindow extends JFrame {
         nameField.setFont(new Font("", Font.PLAIN, 18));
 
         JLabel loginLabel = new JLabel("Your login");
-        loginLabel.setBounds(400, 175, 100, 50);
+        loginLabel.setBounds(385, 175, 100, 50);
         loginLabel.setForeground(Color.WHITE);
 
         loginField = new JTextField(model.getLogin());
@@ -186,8 +203,8 @@ public class MainWindow extends JFrame {
         loginField.setBackground(new Color(44, 44, 44));
         loginField.setFont(new Font("", Font.PLAIN, 18));
 
-        JLabel oldPasswordLabel = new JLabel("Old password");
-        oldPasswordLabel.setBounds(400, 250, 100, 50);
+        JLabel oldPasswordLabel = new JLabel("Current password");
+        oldPasswordLabel.setBounds(385, 250, 115, 50);
         oldPasswordLabel.setForeground(Color.WHITE);
 
         oldPasswordField = new JPasswordField("");
@@ -197,7 +214,7 @@ public class MainWindow extends JFrame {
         oldPasswordField.setFont(new Font("", Font.PLAIN, 18));
 
         JLabel newPasswordLabel = new JLabel("New password");
-        newPasswordLabel.setBounds(400, 325, 100, 50);
+        newPasswordLabel.setBounds(385, 325, 100, 50);
         newPasswordLabel.setForeground(Color.WHITE);
 
         newPasswordField = new JPasswordField("");
@@ -207,7 +224,7 @@ public class MainWindow extends JFrame {
         newPasswordField.setFont(new Font("", Font.PLAIN, 18));
 
         JLabel confirmationPasswordLabel = new JLabel("Confirmation");
-        confirmationPasswordLabel.setBounds(400, 400, 100, 50);
+        confirmationPasswordLabel.setBounds(385, 400, 100, 50);
         confirmationPasswordLabel.setForeground(Color.WHITE);
 
         newConfirmationPasswordField = new JPasswordField("");
@@ -239,6 +256,51 @@ public class MainWindow extends JFrame {
         settingsPanel.add(saveButton);
 
         return settingsPanel;
+    }
+
+    public JPanel drawAddTask() {
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(44, 44, 44));
+        panel.setLayout(null);
+
+        JLabel label = new JLabel("Creating new task");
+        label.setBounds(540, 0, 200, 200);
+        label.setForeground(new Color(212, 212, 212));
+        label.setFont(new Font("", Font.PLAIN, 24));
+
+        newTaskName = new JTextField("");
+        newTaskName.setBounds(475, 175, 300, 50);
+        newTaskName.setForeground(new Color(212, 212, 212));
+        newTaskName.setBackground(new Color(44, 44, 44));
+        newTaskName.setFont(new Font("", Font.PLAIN, 18));
+
+        JLabel newTaskNameLabel = new JLabel("Title");
+        newTaskNameLabel.setBounds(605, 100, 200, 100);
+        newTaskNameLabel.setForeground(new Color(212, 212, 212));
+        newTaskNameLabel.setFont(new Font("", Font.PLAIN, 24));
+
+        newTaskDescription = new JTextArea("test");
+        newTaskDescription.setBounds(475, 300, 300, 50);
+        newTaskDescription.setForeground(new Color(212, 212, 212));
+        newTaskDescription.setBackground(new Color(44, 44, 44));
+        newTaskDescription.setFont(new Font("", Font.PLAIN, 18));
+        newTaskDescription.setLineWrap(true);
+        newTaskDescription.setRows(4);
+        newTaskDescription.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+
+        JLabel newTaskDescriptionLabel = new JLabel("Description");
+        newTaskDescriptionLabel.setBounds(570, 200, 200, 150);
+        newTaskDescriptionLabel.setForeground(new Color(212, 212, 212));
+        newTaskDescriptionLabel.setFont(new Font("", Font.PLAIN, 24));
+
+        panel.add(label);
+        panel.add(newTaskName);
+        panel.add(newTaskNameLabel);
+        panel.add(newTaskDescription);
+        panel.add(newTaskDescriptionLabel);
+
+
+        return panel;
     }
 
     public void updateSettings() {
