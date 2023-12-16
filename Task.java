@@ -9,13 +9,12 @@ public class Task {
     private Date deadline;
     private String status;
 
-    public Task(String userLogin, int taskId, String name, String description, Date creationDate, Date deadline, String status) {
+    public Task(String userLogin, int taskId, String name, String description, Date creationDate, String status) {
         this.userLogin = userLogin;
         this.taskId = taskId;
         this.name = name;
         this.description = description;
         this.creationDate = creationDate;
-        this.deadline = deadline;
         this.status = status;
     }
 
