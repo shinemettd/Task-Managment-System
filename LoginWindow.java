@@ -123,4 +123,8 @@ public class LoginWindow extends JFrame {
         usernameField.setText("");
         passwordField.setText("");
     }
+
+    public void hideLoginMessage() {
+        loginMessage.setVisible(false);
+    }
 }
