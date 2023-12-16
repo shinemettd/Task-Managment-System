@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Model {
@@ -32,13 +33,15 @@ public class Model {
             this.name = Repository.getUserName(login);
             this.login = login;
             this.password = password;
-            System.out.println("Model: Success login");
+            System.out.println(Observer.getActionCounter() + ") Model: Success login");
             loginWindow.hideLoginWindow();
+            loginWindow.hideLoginMessage();
             loginWindow = null;
             mainWindow = viewer.getMainWindow();
             mainWindow.updateMainMenu();
             mainWindow.updateSettings();
             doAction("MainWindow");
+
         } else {
             loginWindow.showFailedSignInMessage();
         }
@@ -139,9 +142,9 @@ public class Model {
                 setName(mainWindow.getNameFieldText());
                 mainWindow.updateSettings();
             } case "TaskButtonAction" -> {
-                System.out.println(Observer.getActionCounter() + ") Model: TaskButtonAction, task number = " + currentButtonActionNumber);
-                System.out.println(login + "\nModel: Total tasks = " + Repository.getTasksCount(login));
-                mainWindow.showMainMenu();
+                System.out.println(Observer.getActionCounter() + ") Model: TaskButtonAction, task number = ");
+                mainWindow.drawCurrentTask(Integer.parseInt(currentButtonActionNumber));
+                mainWindow.showCurrentTask();
             } case "SaveNewTask" -> {
                 System.out.println(Observer.getActionCounter() + ") Model: SaveNewTask");
                 checkValidnessAddTaskAndSave();
@@ -171,7 +174,7 @@ public class Model {
         }
         String taskName = mainWindow.getNewTaskName();
         String taskDescription = mainWindow.getNewTaskDescription();
-        Repository.addTask(login, taskName, taskDescription);
+        Repository.addTask(login, taskName, taskDescription, newTaskStatus);
         newTaskStatus = "Planned";
         mainWindow.updateMainMenu();
         mainWindow.showMainMenu();
@@ -193,6 +196,12 @@ public class Model {
             JOptionPane.showMessageDialog(null, "Incorrect new passwords!");
             return;
         }
+        if (!(mainWindow.getOldPasswordFieldText().equals(""))) {
+            System.out.println(Observer.getActionCounter() + ") Model: changePassword");
+            JOptionPane.showMessageDialog(null, "Your new password was saved!");
+            String newPassword = mainWindow.getOldPasswordFieldText();
+            Repository.changeUserPassword(login, newPassword);
+        }
         String newName = mainWindow.getNameFieldText();
         Repository.changeUserName(login, newName);
     }
@@ -211,5 +220,13 @@ public class Model {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setTasksList(ArrayList<Task> tasksList) {
+        this.tasksList = new ArrayList<>(tasksList);
+    }
+
+    public ArrayList<Task> getTaskList() {
+        return tasksList;
     }
 }
