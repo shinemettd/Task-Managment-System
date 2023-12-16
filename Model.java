@@ -13,6 +13,8 @@ public class Model {
     private ArrayList<Task> tasksList;
     private String currentButtonActionNumber;
 
+    private String newTaskStatus;
+
     public Model(Viewer viewer) {
         this.viewer = viewer;
         this.loginWindow = viewer.getLoginWindow();
@@ -69,90 +71,125 @@ public class Model {
         }
         switch (command) {
             case "SignIn" -> {
-                System.out.println("Model: Sign in");
+                System.out.println(Observer.getActionCounter() + ") Model: Sign in");
                 loginWindow = viewer.getLoginWindow();
                 signIn(loginWindow.getLogin(), loginWindow.getPassword());
             } case "SignUp" -> {
-                System.out.println("Model: Sign up");
+                System.out.println(Observer.getActionCounter() +  ") Model: Sign up");
                 viewer.getRegisterWindow().init();
                 registerWindow = viewer.getRegisterWindow();
             } case "Register" -> {
-                System.out.println("Model: Register");
+                System.out.println(Observer.getActionCounter() + ") Model: Register");
                 if (!(checkText(registerWindow.getLogin()))) {
-                    System.out.println("Model: Incorrect type of login");
+                    System.out.println(Observer.getActionCounter() + ") Model: Incorrect type of login");
                     registerWindow.showIncorrectLoginError();
                     return;
                 }
                 if (!(checkText(registerWindow.getPassword()))) {
-                    System.out.println("Model: Incorrect type of password");
+                    System.out.println(Observer.getActionCounter() + ")Model: Incorrect type of password");
                     registerWindow.showIncorrectPasswordError();
                     return;
                 }
                 if (!(registerWindow.comparePasswords())) {
-                    System.out.println("Model: Passwords does not matches");
+                    System.out.println(Observer.getActionCounter() + ") Model: Passwords does not matches");
                     registerWindow.showFailedPasswordError();
                     return;
                 }
                 if (signUp(registerWindow.getLogin(), registerWindow.getPassword(), registerWindow.getName())) {
-                    System.out.println("Model: Account registered");
+                    System.out.println(Observer.getActionCounter() + ") Model: Account registered");
                 } else {
                     registerWindow.showFailedLoginError();
-                    System.out.println("Model: Account not registered (Same login exists)");
+                    System.out.println(Observer.getActionCounter() + ") Model: Account not registered (Same login exists)");
                 }
                 doAction("BackToLogin");
                 loginWindow = viewer.getLoginWindow();
                 loginWindow.showUserLoginMessage();
             } case "BackToLogin" -> {
-                System.out.println("Model: BackToLogin");
+                System.out.println(Observer.getActionCounter() + ") Model: BackToLogin");
                 registerWindow.setVisible(false);
                 registerWindow.resetValues();
                 registerWindow = null;
             } case "MainWindow" -> {
-                System.out.println("Model: MainWindow");
+                System.out.println(Observer.getActionCounter() + ") Model: MainWindow");
                 mainWindow = viewer.getMainWindow();
                 mainWindow.updateMainMenu();
                 mainWindow.showMainWindow();
             } case "MenuMainWindow" -> {
-                System.out.println("Model: MenuMainWindow");
+                System.out.println(Observer.getActionCounter() + ") Model: MenuMainWindow");
                 mainWindow = viewer.getMainWindow();
                 mainWindow.updateMainMenu();
                 mainWindow.showMainMenu();
             } case "ProfileMainWindow" -> {
-                System.out.println("Model: ProfileMainWindow");
+                System.out.println(Observer.getActionCounter() + ") Model: ProfileMainWindow");
                 mainWindow = viewer.getMainWindow();
                 mainWindow.updateSettings();
                 mainWindow.showSettings();
             } case "LogoutMainWindow" -> {
-                System.out.println("Model: LogoutWindowMenu");
+                System.out.println(Observer.getActionCounter() + ") Model: LogoutWindowMenu");
                 this.login = null;
                 mainWindow.hideMainWindow();
                 loginWindow = viewer.getLoginWindow();
                 loginWindow.showLoginWindow();
             } case "AddTaskMainWindow" -> {
-                System.out.println("Model: AddTaskMainWindow");
+                System.out.println(Observer.getActionCounter() + ") Model: AddTaskMainWindow");
                 mainWindow.showAddTask();
             } case "SaveSettings" -> {
-                System.out.println("Model: SaveSettings");
+                System.out.println(Observer.getActionCounter() + ") Model: SaveSettings");
                 changePassword();
                 setName(mainWindow.getNameFieldText());
                 mainWindow.updateSettings();
             } case "TaskButtonAction" -> {
-                System.out.println("Model: TaskButtonAction, task number = " + currentButtonActionNumber);
+                System.out.println(Observer.getActionCounter() + "( Model: TaskButtonAction, task number = " + currentButtonActionNumber);
                 System.out.println(login + "\nModel: Total tasks = " + Repository.getTasksCount(login));
                 mainWindow.showMainMenu();
+            } case "SaveNewTask" -> {
+                System.out.println(Observer.getActionCounter() + ") Model: SaveNewTask");
+                checkValidnessAddTaskAndSave();
+            } case "ChangeActionToDoing" -> {
+                System.out.println(Observer.getActionCounter() + ") Model: ChangeActionToDoing");
+                newTaskStatus = "Doing";
+            } case "ChangeActionToPlanned" -> {
+                System.out.println(Observer.getActionCounter() + ") Model: ChangeActionToPlanned");
+                newTaskStatus = "Planned";
+            } case "ChangeActionToDone" -> {
+                System.out.println(Observer.getActionCounter() + ") Model: ChangeActionToDone");
+                newTaskStatus = "Done";
             }
         }
     }
+
+    public void checkValidnessAddTaskAndSave() {
+        if (mainWindow.getNewTaskName().equals("")) {
+            System.out.println(Observer.getActionCounter() + ") Model: checkValidnessAddTaskAndSave (newTaskName have no value)");
+            JOptionPane.showMessageDialog(null, "You must enter task title!");
+            return;
+        }
+        if (!(mainWindow.isAnyButtonSelected())) {
+            System.out.println(Observer.getActionCounter() + ") Model: checkValidnessAddTaskAndSave (no button was selected)");
+            JOptionPane.showMessageDialog(null, "You must select one of the statuses!");
+            return;
+        }
+        String taskName = mainWindow.getNewTaskName();
+        String taskDescription = mainWindow.getNewTaskDescription();
+        Repository.addTask(login, taskName, taskDescription);
+        newTaskStatus = "Planned";
+        mainWindow.updateMainMenu();
+        mainWindow.showMainMenu();
+        mainWindow.clearAddTask();
+    }
     public void changePassword() {
         if (mainWindow.getOldPasswordFieldText().equals("")) {
+            System.out.println(Observer.getActionCounter() + ") Model: changePassword (password wasn't entered)");
             JOptionPane.showMessageDialog(null, "You must enter your current password to save changes!");
             return;
         }
         if (!(mainWindow.getOldPasswordFieldText().equals(password))) {
+            System.out.println(Observer.getActionCounter() + ") Model: changePassword (incorrect current password)");
             JOptionPane.showMessageDialog(null, "Incorrect current password!");
             return;
         }
         if (!(mainWindow.getNewPasswordField().equals(mainWindow.getNewConfirmationPasswordField()))) {
+            System.out.println(Observer.getActionCounter() + ") Model: changePassword (new passwords are not the same)");
             JOptionPane.showMessageDialog(null, "Incorrect new passwords!");
             return;
         }

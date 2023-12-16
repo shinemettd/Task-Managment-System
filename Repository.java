@@ -41,10 +41,10 @@ public class Repository {
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
-                    System.out.println("Repository: Success account creation");
+                    System.out.println(Observer.getActionCounter() + ") Repository: Success account creation");
                     return true;
                 } else {
-                    System.out.println("Repository: Failed account creation");
+                    System.out.println(Observer.getActionCounter() + ") Repository: Failed account creation");
                     return false;
                 }
             }
@@ -63,40 +63,35 @@ public class Repository {
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Repository: Success name change");
+                System.out.println(Observer.getActionCounter() + ") Repository: Success name change");
             } else {
-                System.out.println("Repository: Failed name change");
+                System.out.println(Observer.getActionCounter() + ") Repository: Failed name change");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
     }
 
-    public static void addTask(String user_login, String task_name, String task_description, String deadline) {
+    public static void addTask(String user_login, String task_name, String task_description) {
         if (task_name.length() >= 100) {
             task_name = task_name.substring(0, 96) + "...";
         }
-        if (task_description.length() >= 2000) {
-            task_description = task_description.substring(0, 1996) + "...";
+        if (task_description.length() >= 1000) {
+            task_description = task_description.substring(0, 996) + "...";
         }
-        if (deadline.length() > 10) {
-            deadline = "1900-01-01";
-        }
-        String insertQuery = "INSERT INTO task (name, description, deadline, user_login)" +
-                "VALUES (?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO task (name, description, user_login)" +
+                "VALUES (?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
             preparedStatement.setString(1, task_name);
             preparedStatement.setString(2, task_description);
-            Date sqlDeadline = Date.valueOf(deadline);
-            preparedStatement.setDate(3, sqlDeadline);
-            preparedStatement.setString(4, user_login);
+            preparedStatement.setString(3, user_login);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Repository: Success task creation");
+                System.out.println(Observer.getActionCounter() + ") Repository: Success task creation");
             } else {
-                System.out.println("Repository: Failed task creation");
+                System.out.println(Observer.getActionCounter() + ") Repository: Failed task creation");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -113,9 +108,9 @@ public class Repository {
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Repository: Success task deletion");
+                System.out.println(Observer.getActionCounter() + ") Repository: Success task deletion");
             } else {
-                System.out.println("Repository: Failed task deletion");
+                System.out.println(Observer.getActionCounter() + ") Repository: Failed task deletion");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -132,9 +127,9 @@ public class Repository {
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Repository: Success name rewrite");
+                System.out.println(Observer.getActionCounter() + ") Repository: Success name rewrite");
             } else {
-                System.out.println("Repository: Failed name rewrite");
+                System.out.println(Observer.getActionCounter() + ") Repository: Failed name rewrite");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -151,9 +146,9 @@ public class Repository {
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Repository: Success description rewrite");
+                System.out.println(Observer.getActionCounter() + ") Repository: Success description rewrite");
             } else {
-                System.out.println("Repository: Failed description rewrite");
+                System.out.println(Observer.getActionCounter() + ") Repository: Failed description rewrite");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -171,9 +166,9 @@ public class Repository {
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Repository: Success deadline rewrite");
+                System.out.println(Observer.getActionCounter() + ") Repository: Success deadline rewrite");
             } else {
-                System.out.println("Repository: Failed deadline rewrite");
+                System.out.println(Observer.getActionCounter() + ") Repository: Failed deadline rewrite");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -182,7 +177,7 @@ public class Repository {
 
     public static void changeTaskStatus(String login, int task_id, String newStatus) {
         if (!(newStatus.equals("Planned") || newStatus.equals("Doing") || newStatus.equals("Done"))) {
-            System.out.println("Repository: Incorrect type of status");
+            System.out.println(Observer.getActionCounter() + ") Repository: Incorrect type of status");
             return;
         }
         String updateQuery = "UPDATE task SET status = ? WHERE task_id = ? AND user_login = ?";
@@ -194,9 +189,9 @@ public class Repository {
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Repository: Success status rewrite");
+                System.out.println(Observer.getActionCounter() + ") Repository: Success status rewrite");
             } else {
-                System.out.println("Repository: Failed status rewrite");
+                System.out.println(Observer.getActionCounter() + ") Repository: Failed status rewrite");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -212,14 +207,14 @@ public class Repository {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    System.out.println("Repository: Success login");
+                    System.out.println(Observer.getActionCounter() + ") Repository: Success login");
                     return true;
                 }
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
-        System.out.println("Repository: Failed login");
+        System.out.println(Observer.getActionCounter() + ") Repository: Failed login");
         return false;
     }
 
