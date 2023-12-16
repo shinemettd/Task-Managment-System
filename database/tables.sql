@@ -11,6 +11,5 @@ create table task (
     name varchar(100) not null,
     description varchar(1000) not null,
     creation_date date default current_date,
-    deadline date,
     status varchar(10) default 'Planned' not null check (status in ('Planned', 'Doing', 'Done'))
 );
