@@ -2,7 +2,6 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Formatter;
 
 public class MainWindow extends JFrame {
     private Controller controller;
@@ -24,9 +23,13 @@ public class MainWindow extends JFrame {
 
     private JTextField newTaskName;
     private JTextArea newTaskDescription;
-    private JTextField newTaskStatus;
     private String newTaskCreationDate;
-    private String newTaskDeadline;
+
+    JRadioButton rButtonDoing;
+    JRadioButton rButtonPlanned;
+    JRadioButton rButtonDone;
+
+    ButtonGroup rButtonGroup;
 
 
     public MainWindow(Controller controller) {
@@ -104,6 +107,10 @@ public class MainWindow extends JFrame {
 
         actionPanel.add(settingsPanel, "Settings");
 
+        JPanel currentTaskPanel = drawSettings();
+
+        actionPanel.add(currentTaskPanel, "CurrentTask");
+
         mainPanel.add(actionPanel);
 
         add(mainPanel);
@@ -167,7 +174,7 @@ public class MainWindow extends JFrame {
         repaint();
     }
 
-    public JPanel drawTask() {
+    public JPanel drawCurrentTask() {
         JPanel panel = new JPanel();
 
         JLabel label = new JLabel("Task!");
@@ -272,20 +279,19 @@ public class MainWindow extends JFrame {
         newTaskName.setBounds(475, 175, 300, 50);
         newTaskName.setForeground(new Color(212, 212, 212));
         newTaskName.setBackground(new Color(44, 44, 44));
-        newTaskName.setFont(new Font("", Font.PLAIN, 18));
+        newTaskName.setFont(new Font("", Font.PLAIN, 22));
 
         JLabel newTaskNameLabel = new JLabel("Title");
         newTaskNameLabel.setBounds(605, 100, 200, 100);
         newTaskNameLabel.setForeground(new Color(212, 212, 212));
         newTaskNameLabel.setFont(new Font("", Font.PLAIN, 24));
 
-        newTaskDescription = new JTextArea("test");
-        newTaskDescription.setBounds(475, 300, 300, 50);
+        newTaskDescription = new JTextArea("");
+        newTaskDescription.setBounds(425, 300, 400, 100);
         newTaskDescription.setForeground(new Color(212, 212, 212));
         newTaskDescription.setBackground(new Color(44, 44, 44));
         newTaskDescription.setFont(new Font("", Font.PLAIN, 18));
         newTaskDescription.setLineWrap(true);
-        newTaskDescription.setRows(4);
         newTaskDescription.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
         JLabel newTaskDescriptionLabel = new JLabel("Description");
@@ -293,14 +299,76 @@ public class MainWindow extends JFrame {
         newTaskDescriptionLabel.setForeground(new Color(212, 212, 212));
         newTaskDescriptionLabel.setFont(new Font("", Font.PLAIN, 24));
 
+        rButtonDoing = new JRadioButton("Doing");
+        rButtonDoing.setActionCommand("ChangeActionToDoing");
+        rButtonDoing.addActionListener(controller);
+        rButtonDoing.setRequestFocusEnabled(false);
+        rButtonDoing.setBounds(500, 400, 100, 100);
+        rButtonDoing.setForeground(new Color(212, 212, 212));
+        rButtonDoing.setBackground(new Color(44, 44, 44));
+
+        rButtonPlanned = new JRadioButton("Planned");
+        rButtonPlanned.setActionCommand("ChangeActionToPlanned");
+        rButtonPlanned.addActionListener(controller);
+        rButtonPlanned.setRequestFocusEnabled(false);
+        rButtonPlanned.setBounds(600, 400, 100, 100);
+        rButtonPlanned.setForeground(new Color(212, 212, 212));
+        rButtonPlanned.setBackground(new Color(44, 44, 44));
+
+        rButtonDone = new JRadioButton("Done");
+        rButtonDone.setActionCommand("ChangeActionToPlanned");
+        rButtonDone.addActionListener(controller);
+        rButtonDone.setRequestFocusEnabled(false);
+        rButtonDone.setBounds(700, 400, 100, 100);
+        rButtonDone.setForeground(new Color(212, 212, 212));
+        rButtonDone.setBackground(new Color(44, 44, 44));
+
+        rButtonGroup = new ButtonGroup();
+        rButtonGroup.add(rButtonDoing);
+        rButtonGroup.add(rButtonPlanned);
+        rButtonGroup.add(rButtonDone);
+
+        JButton saveButton = new JButton("Save");
+        saveButton.setActionCommand("SaveNewTask");
+        saveButton.addActionListener(controller);
+        saveButton.setBounds(550, 500, 150, 50);
+        saveButton.setRequestFocusEnabled(false);
+        saveButton.setFont(new Font("", Font.BOLD, 18));
+        saveButton.setForeground(new Color(212, 212, 212));
+        saveButton.setBackground(new Color(44, 44, 44));
+        saveButton.setBorder(new LineBorder(new Color(212, 212, 212), 1));
+
         panel.add(label);
         panel.add(newTaskName);
         panel.add(newTaskNameLabel);
         panel.add(newTaskDescription);
         panel.add(newTaskDescriptionLabel);
-
+        panel.add(rButtonDoing);
+        panel.add(rButtonPlanned);
+        panel.add(rButtonDone);
+        panel.add(saveButton);
 
         return panel;
+    }
+
+    public String getNewTaskName() {
+        return newTaskName.getText();
+    }
+
+    public String getNewTaskDescription() {
+        return newTaskDescription.getText();
+    }
+
+    public void clearAddTask() {
+        newTaskName.setText("");
+        newTaskDescription.setText("");
+        rButtonPlanned.setSelected(false);
+        rButtonDoing.setSelected(false);
+        rButtonDone.setSelected(false);
+    }
+
+    public boolean isAnyButtonSelected() {
+        return rButtonDoing.isSelected() || rButtonPlanned.isSelected() || rButtonDone.isSelected();
     }
 
     public void updateSettings() {
