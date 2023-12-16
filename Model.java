@@ -86,7 +86,7 @@ public class Model {
                     return;
                 }
                 if (!(checkText(registerWindow.getPassword()))) {
-                    System.out.println(Observer.getActionCounter() + ")Model: Incorrect type of password");
+                    System.out.println(Observer.getActionCounter() + ") Model: Incorrect type of password");
                     registerWindow.showIncorrectPasswordError();
                     return;
                 }
@@ -139,7 +139,7 @@ public class Model {
                 setName(mainWindow.getNameFieldText());
                 mainWindow.updateSettings();
             } case "TaskButtonAction" -> {
-                System.out.println(Observer.getActionCounter() + "( Model: TaskButtonAction, task number = " + currentButtonActionNumber);
+                System.out.println(Observer.getActionCounter() + ") Model: TaskButtonAction, task number = " + currentButtonActionNumber);
                 System.out.println(login + "\nModel: Total tasks = " + Repository.getTasksCount(login));
                 mainWindow.showMainMenu();
             } case "SaveNewTask" -> {
