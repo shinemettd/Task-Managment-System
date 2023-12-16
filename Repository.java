@@ -72,20 +72,39 @@ public class Repository {
         }
     }
 
-    public static void addTask(String user_login, String task_name, String task_description) {
+    public static void changeUserPassword(String login, String newPassword) {
+        String updateQuery = "UPDATE \"user\" SET password = ? WHERE login = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, newPassword);
+            preparedStatement.setString(2, login);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println(Observer.getActionCounter() + ") Repository: Success password change");
+            } else {
+                System.out.println(Observer.getActionCounter() + ") Repository: Failed password change");
+            }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+    }
+
+    public static void addTask(String user_login, String task_name, String task_description, String task_status) {
         if (task_name.length() >= 100) {
             task_name = task_name.substring(0, 96) + "...";
         }
         if (task_description.length() >= 1000) {
             task_description = task_description.substring(0, 996) + "...";
         }
-        String insertQuery = "INSERT INTO task (name, description, user_login)" +
-                "VALUES (?, ?, ?)";
+        String insertQuery = "INSERT INTO task (name, description, user_login, status)" +
+                "VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
             preparedStatement.setString(1, task_name);
             preparedStatement.setString(2, task_description);
             preparedStatement.setString(3, user_login);
+            preparedStatement.setString(4, task_status);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -149,26 +168,6 @@ public class Repository {
                 System.out.println(Observer.getActionCounter() + ") Repository: Success description rewrite");
             } else {
                 System.out.println(Observer.getActionCounter() + ") Repository: Failed description rewrite");
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-    }
-
-    public static void changeTaskDeadline(String login, int task_id, String newDeadline) {
-        String updateQuery = "UPDATE task SET deadline = ? WHERE task_id = ? AND user_login  = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
-            Date sqlDeadline = Date.valueOf(newDeadline);
-            preparedStatement.setDate(1, sqlDeadline);
-            preparedStatement.setInt(2, task_id);
-            preparedStatement.setString(3, login);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println(Observer.getActionCounter() + ") Repository: Success deadline rewrite");
-            } else {
-                System.out.println(Observer.getActionCounter() + ") Repository: Failed deadline rewrite");
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -272,10 +271,9 @@ public class Repository {
                     String name = resultSet.getString("name");
                     String description = resultSet.getString("description");
                     Date creationDate = resultSet.getDate("creation_date");
-                    Date deadline = resultSet.getDate("deadline");
                     String status = resultSet.getString("status");
 
-                    Task task = new Task(userLogin, taskId, name, description, creationDate, deadline, status);
+                    Task task = new Task(userLogin, taskId, name, description, creationDate, status);
                     taskList.add(task);
                 }
             }
