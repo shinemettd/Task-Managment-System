@@ -4,32 +4,20 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class MainWindow extends JFrame {
-    private Controller controller;
-    private JPanel mainPanel;
-    private JPanel navigationPanel;
-
-    private JPanel actionPanel;
-
-    private CardLayout cardLayout;
-
-    private Model model;
-
+    private final Controller controller;
+    private final JPanel actionPanel;
+    private final CardLayout cardLayout;
+    private final Model model;
     private JTextField nameField;
-
     private JTextField loginField;
     private JPasswordField oldPasswordField;
     private JPasswordField newPasswordField;
     private JPasswordField newConfirmationPasswordField;
-
     private JTextField newTaskName;
     private JTextArea newTaskDescription;
-    private String newTaskCreationDate;
-
-    JRadioButton rButtonDoing;
-    JRadioButton rButtonPlanned;
-    JRadioButton rButtonDone;
-
-    ButtonGroup rButtonGroup;
+    private JRadioButton rButtonDoing;
+    private JRadioButton rButtonPlanned;
+    private JRadioButton rButtonDone;
 
 
     public MainWindow(Controller controller) {
@@ -42,9 +30,9 @@ public class MainWindow extends JFrame {
 
         model = controller.getModel();
 
-        navigationPanel = new JPanel();
+        JPanel navigationPanel = new JPanel();
         navigationPanel.setBackground(new Color(44, 44, 44));
-        navigationPanel.setPreferredSize(new Dimension(getWidth(), 50)); // height navbag
+        navigationPanel.setPreferredSize(new Dimension(getWidth(), 50));
 
         JButton menu = new JButton("All tasks");
         menu.addActionListener(controller);
@@ -87,7 +75,7 @@ public class MainWindow extends JFrame {
         navigationPanel.add(profile);
         navigationPanel.add(logOut);
 
-        mainPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
 
         mainPanel.add(navigationPanel, BorderLayout.NORTH);
 
@@ -107,7 +95,7 @@ public class MainWindow extends JFrame {
 
         actionPanel.add(settingsPanel, "Settings");
 
-        JPanel currentTaskPanel = drawSettings();
+        JPanel currentTaskPanel = new JPanel();
 
         actionPanel.add(currentTaskPanel, "CurrentTask");
 
@@ -122,6 +110,7 @@ public class MainWindow extends JFrame {
         buttonPanel.setBackground(new Color(22, 22, 22));
 
         ArrayList<Task> tasksList = Repository.getTasksList(model.getLogin());
+        model.setTasksList(tasksList);
 
         for (int i = 0; i < tasksList.size(); i++) {
             String taskName = tasksList.get(i).getName();
@@ -174,14 +163,32 @@ public class MainWindow extends JFrame {
         repaint();
     }
 
-    public JPanel drawCurrentTask() {
-        JPanel panel = new JPanel();
+    public void drawCurrentTask(int taskIndex) {
+        JPanel currentTaskPanel = new JPanel();
+        currentTaskPanel.setForeground(new Color(212, 212, 212));
+        currentTaskPanel.setBackground(new Color(44, 44, 44));;
+        currentTaskPanel.setLayout(null);
 
-        JLabel label = new JLabel("Task!");
+        Task currentTask = model.getTaskList().get(taskIndex);
 
-        panel.add(label);
+        JLabel taskNameLabel = new JLabel(currentTask.getName());
+        taskNameLabel.setForeground(Color.WHITE);
+        taskNameLabel.setBounds(0, 0, 100, 100);
 
-        return panel;
+        JLabel taskDescriptionLabel = new JLabel(currentTask.getDescription());
+        taskDescriptionLabel.setForeground(Color.WHITE);
+        taskDescriptionLabel.setBounds(0, 100, 100, 100);
+
+        JLabel taskStatusLabel = new JLabel(currentTask.getStatus());
+        taskStatusLabel.setForeground(Color.WHITE);
+        taskStatusLabel.setBounds(0, 200, 100, 100);
+
+        currentTaskPanel.add(taskNameLabel);
+        currentTaskPanel.add(taskDescriptionLabel);
+        currentTaskPanel.add(taskStatusLabel);
+
+        actionPanel.remove(3);
+        actionPanel.add(currentTaskPanel, "CurrentTask");
     }
 
     public JPanel drawSettings() {
@@ -323,7 +330,7 @@ public class MainWindow extends JFrame {
         rButtonDone.setForeground(new Color(212, 212, 212));
         rButtonDone.setBackground(new Color(44, 44, 44));
 
-        rButtonGroup = new ButtonGroup();
+        ButtonGroup rButtonGroup = new ButtonGroup();
         rButtonGroup.add(rButtonDoing);
         rButtonGroup.add(rButtonPlanned);
         rButtonGroup.add(rButtonDone);
@@ -374,6 +381,9 @@ public class MainWindow extends JFrame {
     public void updateSettings() {
         nameField.setText(model.getName());
         loginField.setText(model.getLogin());
+        oldPasswordField.setText("");
+        newPasswordField.setText("");
+        newConfirmationPasswordField.setText("");
     }
 
     public void showMainMenu() {
@@ -382,6 +392,9 @@ public class MainWindow extends JFrame {
 
     public void showAddTask() {
         cardLayout.show(actionPanel, "AddTask");
+    }
+    public void showCurrentTask() {
+        cardLayout.show(actionPanel, "CurrentTask");
     }
 
     public void showSettings() {
