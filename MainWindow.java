@@ -27,7 +27,6 @@ public class MainWindow extends JFrame {
     private JButton editButton;
     private JButton deleteButton;
 
-
     public MainWindow(Controller controller) {
         super("Task Management System");
         setResizable(false);
@@ -174,7 +173,7 @@ public class MainWindow extends JFrame {
     public void drawCurrentTask(int taskIndex) {
         JPanel currentTaskPanel = new JPanel();
         currentTaskPanel.setForeground(new Color(212, 212, 212));
-        currentTaskPanel.setBackground(new Color(44, 44, 44));;
+        currentTaskPanel.setBackground(new Color(44, 44, 44));
         currentTaskPanel.setLayout(null);
 
         Task currentTask = model.getTaskList().get(taskIndex);
@@ -200,7 +199,7 @@ public class MainWindow extends JFrame {
         rButtonCurrentTaskDoing.addActionListener(controller);
         rButtonCurrentTaskDoing.setRequestFocusEnabled(false);
         rButtonCurrentTaskDoing.setEnabled(false);
-        if(currentTask.getStatus().equals("Doing")) {
+        if (currentTask.getStatus().equals("Doing")) {
             rButtonCurrentTaskDoing.setSelected(true);
         }
         rButtonCurrentTaskDoing.setBounds(500, 400, 100, 100);
@@ -212,7 +211,7 @@ public class MainWindow extends JFrame {
         rButtonCurrentTaskPlanned.addActionListener(controller);
         rButtonCurrentTaskPlanned.setEnabled(false);
         rButtonCurrentTaskPlanned.setRequestFocusEnabled(false);
-        if(currentTask.getStatus().equals("Planned")) {
+        if (currentTask.getStatus().equals("Planned")) {
             rButtonCurrentTaskPlanned.setSelected(true);
         }
         rButtonCurrentTaskPlanned.setBounds(600, 400, 100, 100);
@@ -224,7 +223,7 @@ public class MainWindow extends JFrame {
         rButtonCurrentTaskDone.addActionListener(controller);
         rButtonCurrentTaskDone.setRequestFocusEnabled(false);
         rButtonCurrentTaskDone.setEnabled(false);
-        if(currentTask.getStatus().equals("Done")) {
+        if (currentTask.getStatus().equals("Done")) {
             rButtonCurrentTaskDone.setSelected(true);
         }
         rButtonCurrentTaskDone.setBounds(700, 400, 100, 100);
@@ -545,7 +544,6 @@ public class MainWindow extends JFrame {
     public String getOldPasswordFieldText() {
         return new String(oldPasswordField.getPassword());
     }
-
 
     public String getCurrentChosenTaskStatus() {
         if (rButtonCurrentTaskDone.isSelected()) {

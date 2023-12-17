@@ -2,7 +2,6 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Repository {
-
     private static String databaseAddress = "jdbc:postgresql://localhost:5432/postgres";
     private static String databaseUser = "postgres";
     private static String databasePassword = "admin";
@@ -258,24 +257,6 @@ public class Repository {
             sqle.printStackTrace();
         }
         return name;
-    }
-
-    public static int getTasksCount(String login) {
-        String selectName = "SELECT COUNT(*) AS count FROM task WHERE user_login = ?";
-        int count = 0;
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectName)) {
-            preparedStatement.setString(1, login);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    count = resultSet.getInt("count");
-                }
-            }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-        return count;
     }
 
     public static ArrayList<Task> getTasksList(String login) {

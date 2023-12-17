@@ -3,11 +3,10 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class LoginWindow extends JFrame {
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JTextField errorField;
-    private JTextField loginMessage;
-    private final Controller controller;
+    private final JTextField usernameField;
+    private final JPasswordField passwordField;
+    private final JTextField errorField;
+    private final JTextField loginMessage;
 
     public LoginWindow(Controller controller) {
         super("Task Manager");
@@ -52,7 +51,6 @@ public class LoginWindow extends JFrame {
         loginButton.setForeground(new Color(212, 212, 212));
         loginButton.setBackground(new Color(44, 44, 44));
         loginButton.setBorder(new LineBorder(new Color(212, 212, 212), 1));
-        this.controller = controller;
         loginButton.addActionListener(controller);
         loginButton.setActionCommand("SignIn");
         panel.add(loginButton);

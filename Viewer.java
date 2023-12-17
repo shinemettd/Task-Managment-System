@@ -1,12 +1,10 @@
 public class Viewer {
-    private Controller controller;
-
-    private LoginWindow loginWindow;
-    private RegisterWindow registerWindow;
-    private MainWindow mainWindow;
+    private final LoginWindow loginWindow;
+    private final RegisterWindow registerWindow;
+    private final MainWindow mainWindow;
 
     public Viewer() {
-        controller = new Controller(this);
+        Controller controller = new Controller(this);
         loginWindow = new LoginWindow(controller);
         registerWindow = new RegisterWindow(controller);
         mainWindow = new MainWindow(controller);

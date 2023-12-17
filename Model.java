@@ -1,9 +1,8 @@
 import javax.swing.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Model {
-    private Viewer viewer;
+    private final Viewer viewer;
     private String name;
 
     private String login;
@@ -47,29 +46,13 @@ public class Model {
         }
     }
 
-    private void signOut() {
-        login = null;
-    }
-
-    private void createTask() {
-
-    }
-
-    public void modifyTask() {
-
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public void doAction(String command) {
         if (command.contains("TaskButtonAction") && command.length() > 16) {
-            currentButtonActionNumber = command.substring(16, command.length());
+            currentButtonActionNumber = command.substring(16);
             doAction("TaskButtonAction");
         }
         switch (command) {
@@ -243,10 +226,6 @@ public class Model {
 
     public String getLogin() {
         return login;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setTasksList(ArrayList<Task> tasksList) {
