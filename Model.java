@@ -13,8 +13,8 @@ public class Model {
     private MainWindow mainWindow;
     private ArrayList<Task> tasksList;
     private String currentButtonActionNumber;
-
     private String newTaskStatus;
+    private int currentTaskId;
 
     public Model(Viewer viewer) {
         this.viewer = viewer;
@@ -142,7 +142,7 @@ public class Model {
                 setName(mainWindow.getNameFieldText());
                 mainWindow.updateSettings();
             } case "TaskButtonAction" -> {
-                System.out.println(Observer.getActionCounter() + ") Model: TaskButtonAction, task number = ");
+                System.out.println(Observer.getActionCounter() + ") Model: TaskButtonAction");
                 mainWindow.drawCurrentTask(Integer.parseInt(currentButtonActionNumber));
                 mainWindow.showCurrentTask();
             } case "SaveNewTask" -> {
@@ -157,6 +157,34 @@ public class Model {
             } case "ChangeActionToDone" -> {
                 System.out.println(Observer.getActionCounter() + ") Model: ChangeActionToDone");
                 newTaskStatus = "Done";
+            } case "EditCurrentTask" -> {
+                System.out.println(Observer.getActionCounter() + ") Model: EditCurrentTask");
+                mainWindow.makeEditableCurrentTask(true);
+            } case "SaveCurrentTask" -> {
+                System.out.println(Observer.getActionCounter() + ") Model: SaveCurrentTask");
+                String newTaskName = mainWindow.getCurrentTaskNameField();
+                if (newTaskName.equals("")) {
+                    JOptionPane.showMessageDialog(null, "You must enter new task title!");
+                    System.out.println(Observer.getActionCounter() + ") Model: EditCurrentTask (newTaskName have no value)");
+                    return;
+                }
+                Repository.changeTaskName(login, currentTaskId, newTaskName);
+                String newTaskDescription = mainWindow.getCurrentTaskDescriptionField();
+                Repository.changeTaskDescription(login, currentTaskId, newTaskDescription);
+                String newTaskStatus = mainWindow.getCurrentChosenTaskStatus();
+                Repository.changeTaskStatus(login, currentTaskId, newTaskStatus);
+                mainWindow.makeEditableCurrentTask(false);
+            } case "DeleteCurrentTask" -> {
+                System.out.println(Observer.getActionCounter() + ") Model: DeleteCurrentTask (awaiting confirmation)");
+                int result = JOptionPane.showConfirmDialog(null, "Do you really want to delete task?", "Deleting task confirmation", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    System.out.println(Observer.getActionCounter() + ") Model: DeleteCurrentTask (user confirmed deletion)");
+                    Repository.removeTask(login, currentTaskId);
+                    doAction("MenuMainWindow");
+                } else {
+                    System.out.println(Observer.getActionCounter() + ") Model: DeleteCurrentTask (user canceled deletion)");
+                    return;
+                }
             }
         }
     }
@@ -175,7 +203,6 @@ public class Model {
         String taskName = mainWindow.getNewTaskName();
         String taskDescription = mainWindow.getNewTaskDescription();
         Repository.addTask(login, taskName, taskDescription, newTaskStatus);
-        newTaskStatus = "Planned";
         mainWindow.updateMainMenu();
         mainWindow.showMainMenu();
         mainWindow.clearAddTask();
@@ -228,5 +255,9 @@ public class Model {
 
     public ArrayList<Task> getTaskList() {
         return tasksList;
+    }
+
+    public void setCurrentId(int taskId) {
+        currentTaskId = taskId;
     }
 }

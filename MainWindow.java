@@ -18,6 +18,14 @@ public class MainWindow extends JFrame {
     private JRadioButton rButtonDoing;
     private JRadioButton rButtonPlanned;
     private JRadioButton rButtonDone;
+    private JTextField currentTaskNameField;
+    private JTextArea currentTaskDescriptionField;
+    private JRadioButton rButtonCurrentTaskDoing;
+    private JRadioButton rButtonCurrentTaskPlanned;
+    private JRadioButton rButtonCurrentTaskDone;
+    private JButton okButton;
+    private JButton editButton;
+    private JButton deleteButton;
 
 
     public MainWindow(Controller controller) {
@@ -122,7 +130,7 @@ public class MainWindow extends JFrame {
             button.setRequestFocusEnabled(false);
             button.setFont(new Font("", Font.BOLD, 36));
             if (tasksList.get(i).getStatus().equals("Done")) {
-                button.setForeground(new Color(212, 212, 212));
+                button.setForeground(new Color(44, 44, 44));
                 button.setBackground(new Color(79, 255, 79));
                 button.setText(String.format("<html>%s<br> [Done] </html>", taskName));
             } else if (tasksList.get(i).getStatus().equals("Doing")) {
@@ -170,25 +178,138 @@ public class MainWindow extends JFrame {
         currentTaskPanel.setLayout(null);
 
         Task currentTask = model.getTaskList().get(taskIndex);
+        model.setCurrentId(currentTask.getTaskId());
 
-        JLabel taskNameLabel = new JLabel(currentTask.getName());
-        taskNameLabel.setForeground(Color.WHITE);
-        taskNameLabel.setBounds(0, 0, 100, 100);
+        currentTaskNameField = new JTextField(currentTask.getName());
+        currentTaskNameField.setForeground(Color.WHITE);
+        currentTaskNameField.setBackground(new Color(44, 44, 44));
+        currentTaskNameField.setEditable(false);
+        currentTaskNameField.setBounds(350, 100, 500, 75);
+        currentTaskNameField.setFont(new Font("", Font.PLAIN, 28));
+        currentTaskNameField.setBorder(null);
 
-        JLabel taskDescriptionLabel = new JLabel(currentTask.getDescription());
-        taskDescriptionLabel.setForeground(Color.WHITE);
-        taskDescriptionLabel.setBounds(0, 100, 100, 100);
+        currentTaskDescriptionField = new JTextArea(currentTask.getDescription());
+        currentTaskDescriptionField.setForeground(Color.WHITE);
+        currentTaskDescriptionField.setBackground(new Color(44, 44, 44));
+        currentTaskDescriptionField.setEditable(false);
+        currentTaskDescriptionField.setBounds(250, 225, 700, 175);
+        currentTaskDescriptionField.setFont(new Font("", Font.PLAIN, 24));
 
-        JLabel taskStatusLabel = new JLabel(currentTask.getStatus());
-        taskStatusLabel.setForeground(Color.WHITE);
-        taskStatusLabel.setBounds(0, 200, 100, 100);
+        rButtonCurrentTaskDoing = new JRadioButton("Doing");
+        rButtonCurrentTaskDoing.setActionCommand("ChangeActionToDoing");
+        rButtonCurrentTaskDoing.addActionListener(controller);
+        rButtonCurrentTaskDoing.setRequestFocusEnabled(false);
+        rButtonCurrentTaskDoing.setEnabled(false);
+        if(currentTask.getStatus().equals("Doing")) {
+            rButtonCurrentTaskDoing.setSelected(true);
+        }
+        rButtonCurrentTaskDoing.setBounds(500, 400, 100, 100);
+        rButtonCurrentTaskDoing.setForeground(new Color(212, 212, 212));
+        rButtonCurrentTaskDoing.setBackground(new Color(44, 44, 44));
 
-        currentTaskPanel.add(taskNameLabel);
-        currentTaskPanel.add(taskDescriptionLabel);
-        currentTaskPanel.add(taskStatusLabel);
+        rButtonCurrentTaskPlanned = new JRadioButton("Planned");
+        rButtonCurrentTaskPlanned.setActionCommand("ChangeActionToPlanned");
+        rButtonCurrentTaskPlanned.addActionListener(controller);
+        rButtonCurrentTaskPlanned.setEnabled(false);
+        rButtonCurrentTaskPlanned.setRequestFocusEnabled(false);
+        if(currentTask.getStatus().equals("Planned")) {
+            rButtonCurrentTaskPlanned.setSelected(true);
+        }
+        rButtonCurrentTaskPlanned.setBounds(600, 400, 100, 100);
+        rButtonCurrentTaskPlanned.setForeground(new Color(212, 212, 212));
+        rButtonCurrentTaskPlanned.setBackground(new Color(44, 44, 44));
+
+        rButtonCurrentTaskDone = new JRadioButton("Done");
+        rButtonCurrentTaskDone.setActionCommand("ChangeActionToDone");
+        rButtonCurrentTaskDone.addActionListener(controller);
+        rButtonCurrentTaskDone.setRequestFocusEnabled(false);
+        rButtonCurrentTaskDone.setEnabled(false);
+        if(currentTask.getStatus().equals("Done")) {
+            rButtonCurrentTaskDone.setSelected(true);
+        }
+        rButtonCurrentTaskDone.setBounds(700, 400, 100, 100);
+        rButtonCurrentTaskDone.setForeground(new Color(212, 212, 212));
+        rButtonCurrentTaskDone.setBackground(new Color(44, 44, 44));
+
+        ButtonGroup rButtonGroup = new ButtonGroup();
+        rButtonGroup.add(rButtonCurrentTaskDoing);
+        rButtonGroup.add(rButtonCurrentTaskPlanned);
+        rButtonGroup.add(rButtonCurrentTaskDone);
+
+        okButton = new JButton("Ok");
+        okButton.setActionCommand("MenuMainWindow");
+        okButton.addActionListener(controller);
+        okButton.setBounds(350, 500, 150, 50);
+        okButton.setRequestFocusEnabled(false);
+        okButton.setFont(new Font("", Font.BOLD, 18));
+        okButton.setForeground(new Color(212, 212, 212));
+        okButton.setBackground(new Color(44, 44, 44));
+        okButton.setBorder(new LineBorder(new Color(212, 212, 212), 1));
+
+        editButton = new JButton("Edit");
+        editButton.setActionCommand("EditCurrentTask");
+        editButton.addActionListener(controller);
+        editButton.setBounds(550, 500, 150, 50);
+        editButton.setRequestFocusEnabled(false);
+        editButton.setFont(new Font("", Font.BOLD, 18));
+        editButton.setForeground(new Color(212, 212, 212));
+        editButton.setBackground(new Color(44, 44, 44));
+        editButton.setBorder(new LineBorder(new Color(212, 212, 212), 1));
+
+        deleteButton = new JButton("Delete");
+        deleteButton.setActionCommand("DeleteCurrentTask");
+        deleteButton.addActionListener(controller);
+        deleteButton.setBounds(750, 500, 150, 50);
+        deleteButton.setRequestFocusEnabled(false);
+        deleteButton.setFont(new Font("", Font.BOLD, 18));
+        deleteButton.setForeground(new Color(212, 212, 212));
+        deleteButton.setBackground(new Color(44, 44, 44));
+        deleteButton.setBorder(new LineBorder(new Color(212, 212, 212), 1));
+
+        currentTaskPanel.add(currentTaskNameField);
+        currentTaskPanel.add(currentTaskDescriptionField);
+        currentTaskPanel.add(rButtonCurrentTaskDoing);
+        currentTaskPanel.add(rButtonCurrentTaskPlanned);
+        currentTaskPanel.add(rButtonCurrentTaskDone);
+        currentTaskPanel.add(editButton);
+        currentTaskPanel.add(okButton);
+        currentTaskPanel.add(deleteButton);
 
         actionPanel.remove(3);
         actionPanel.add(currentTaskPanel, "CurrentTask");
+    }
+
+    public String getCurrentTaskNameField() {
+        return currentTaskNameField.getText();
+    }
+
+    public String getCurrentTaskDescriptionField() {
+        return currentTaskDescriptionField.getText();
+    }
+
+    public void makeEditableCurrentTask(boolean parameter) {
+        currentTaskNameField.setEditable(parameter);
+        currentTaskDescriptionField.setEditable(parameter);
+        rButtonCurrentTaskDone.setEnabled(parameter);
+        rButtonCurrentTaskPlanned.setEnabled(parameter);
+        rButtonCurrentTaskDoing.setEnabled(parameter);
+        if (parameter) {
+            currentTaskNameField.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            currentTaskDescriptionField.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            editButton.setText("Save");
+            editButton.setActionCommand("SaveCurrentTask");
+            editButton.setBounds(450, 500, 150, 50);
+            deleteButton.setBounds(650, 500, 150, 50);
+            okButton.setVisible(false);
+        } else {
+            currentTaskNameField.setBorder(null);
+            currentTaskDescriptionField.setBorder(null);
+            editButton.setText("Edit");
+            editButton.setActionCommand("EditCurrentTask");
+            editButton.setBounds(550, 500, 150, 50);
+            deleteButton.setBounds(750, 500, 150, 50);
+            okButton.setVisible(true);
+        }
     }
 
     public JPanel drawSettings() {
@@ -323,7 +444,7 @@ public class MainWindow extends JFrame {
         rButtonPlanned.setBackground(new Color(44, 44, 44));
 
         rButtonDone = new JRadioButton("Done");
-        rButtonDone.setActionCommand("ChangeActionToPlanned");
+        rButtonDone.setActionCommand("ChangeActionToDone");
         rButtonDone.addActionListener(controller);
         rButtonDone.setRequestFocusEnabled(false);
         rButtonDone.setBounds(700, 400, 100, 100);
@@ -423,5 +544,16 @@ public class MainWindow extends JFrame {
 
     public String getOldPasswordFieldText() {
         return new String(oldPasswordField.getPassword());
+    }
+
+
+    public String getCurrentChosenTaskStatus() {
+        if (rButtonCurrentTaskDone.isSelected()) {
+            return "Done";
+        } else if (rButtonCurrentTaskDoing.isSelected()) {
+            return "Doing";
+        } else {
+            return "Planned";
+        }
     }
 }
