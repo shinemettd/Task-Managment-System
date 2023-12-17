@@ -208,7 +208,7 @@ public class Model {
         }
         if (!(mainWindow.getOldPasswordFieldText().equals(""))) {
             System.out.println(Observer.getActionCounter() + ") Model: changePassword");
-            JOptionPane.showMessageDialog(null, "Your new password was saved!");
+            JOptionPane.showMessageDialog(null, "Your changes was saved!");
             String newPassword = mainWindow.getOldPasswordFieldText();
             Repository.changeUserPassword(login, newPassword);
         }
