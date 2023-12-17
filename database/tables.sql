@@ -1,15 +1,15 @@
-create table "user" (
-    id serial not null,
-    name varchar(30) not null,
-    login varchar(30) unique not null primary key,
-    password varchar(50) not null
+CREATE TABLE "user" (
+    id SERIAL NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    login VARCHAR(30) UNIQUE NOT NULL PRIMARY KEY,
+    password VARCHAR(50) NOT NULL
 );
 
-create table task (
-    user_login varchar(30) not null references "user"(login),
-    task_id serial not null,
-    name varchar(100) not null,
-    description varchar(1000) not null,
-    creation_date date default current_date,
-    status varchar(10) default 'Planned' not null check (status in ('Planned', 'Doing', 'Done'))
+CREATE TABLE task (
+    user_login VARCHAR(30) NOT NULL REFERENCES "user"(login),
+    task_id SERIAL NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    creation_date DATE DEFAULT current_date,
+    status VARCHAR(10) DEFAULT 'Planned' NOT NULL CHECK (status IN ('Planned', 'Doing', 'Done'))
 );
