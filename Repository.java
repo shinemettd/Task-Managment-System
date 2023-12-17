@@ -11,6 +11,31 @@ public class Repository {
     static {
         try {
             connection = DriverManager.getConnection(databaseAddress, databaseUser, databasePassword);
+            String createUserTableQuery = "CREATE TABLE IF NOT EXISTS \"user\" (\n" +
+                    "    id SERIAL NOT NULL,\n" +
+                    "    name VARCHAR(30) NOT NULL,\n" +
+                    "    login VARCHAR(30) UNIQUE NOT NULL PRIMARY KEY,\n" +
+                    "    password VARCHAR(50) NOT NULL\n" +
+                    ");";
+            String createTaskTableQuery = "CREATE TABLE IF NOT EXISTS task (\n" +
+                    "    user_login VARCHAR(30) NOT NULL REFERENCES \"user\"(login),\n" +
+                    "    task_id SERIAL NOT NULL,\n" +
+                    "    name VARCHAR(100) NOT NULL,\n" +
+                    "    description VARCHAR(1000) NOT NULL,\n" +
+                    "    creation_date DATE DEFAULT current_date,\n" +
+                    "    status VARCHAR(10) DEFAULT 'Planned' NOT NULL CHECK (status IN ('Planned', 'Doing', 'Done'))\n" +
+                    ");";
+
+            executeUpdate(createUserTableQuery);
+            executeUpdate(createTaskTableQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void executeUpdate(String query) {
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -118,7 +143,7 @@ public class Repository {
     }
 
     public static void removeTask(String login, int task_id) {
-        String insertQuery = "DELTE FROM task " +
+        String insertQuery = "DELETE FROM task " +
                 "WHERE user_login = ? AND task_id = ? ";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
