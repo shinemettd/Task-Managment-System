@@ -72,6 +72,11 @@ A simple app to help you track your progress in your daily tasks
 ![Settings screenshot](https://sun9-58.userapi.com/impg/iSRjdHbiv2Kxxd1kLKu6IbsdSUUOXavJJI0MIA/awqewRQfsDY.jpg?size=1261x679&quality=96&sign=41472817c0b9e9cda0c4a05130f2b491)
 
 
+## Database scheme
+
+![Database scheme](https://sun9-33.userapi.com/impg/n2AmWlHBQQVTa-7XIka1CiDeMBgPrYz4w8EQHA/l3QXUo8tnDA.jpg?size=1140x661&quality=96&sign=d6b8d846bde7ae9d493a030316dad1ed)
+
+
 ## Getting Started
 
 These instructions will help you set up and run the project on your local machine for development and testing purposes. See "Deployment" for information on deploying the project to a production environment.
