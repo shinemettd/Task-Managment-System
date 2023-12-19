@@ -104,3 +104,6 @@ After the installation, you have to create your own database, and change the val
 
 ## **[Here's a JAR File ](https://drive.google.com/file/d/1ch_p7Ccu45q1pntxhc-DBvoVbA0nVUO)**
 
+## How to use video: https://www.youtube.com/watch?v=WqS79TGTJFM
+
+
